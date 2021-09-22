@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "$(npm bin)/jest"
+    "test": "$(npm bin)/jest --passWithNoTests"
   },
   "author": "Matt O'Keefe (O-Mutt) <Matt@OKeefe.dev>",
   "license": "MIT",
