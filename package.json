@@ -1,0 +1,48 @@
+{
+  "name": "hubot-plusplus-expanded-bonusly",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "$(npm bin)/mocha"
+  },
+  "author": "Matt O'Keefe (O-Mutt) <Matt@OKeefe.dev>",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "hubot-test-helper": "^1.9.0",
+    "mocha": "^7.1.2"
+  },
+  "engines": {
+    "node": "^14"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "axios": "^0.21.4",
+    "hubot-conversation": "^1.1.1"
+  },
+  "keywords": [
+    "hubot-scripts",
+    "hubot-respond",
+    "hubot",
+    "slack",
+    "irc",
+    "hipchat",
+    "campfire",
+    "bot",
+    "robot"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/o-mutt/hubot-plusplus-expanded-bonusly.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "bugs": {
+    "url": "https://github.com/o-mutt/hubot-plusplus-expanded-bonusly/issues"
+  },
+  "homepage": "https://github.com/o-mutt/hubot-plusplus-expanded-bonusly#readme"
+}
