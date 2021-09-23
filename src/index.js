@@ -16,8 +16,8 @@
 
 const { BonuslyResponse } = require('./service/BonuslyResponseEnum');
 const Conversation = require('hubot-conversation');
-const { UserService } = require('./service/UserService');
-const { BonuslyService } = require('./service/BonuslyService');
+const UserService = require('./service/UserService');
+const BonuslyService = require('./service/BonuslyService');
 
 module.exports = function(robot) {
   "use strict";
