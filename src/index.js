@@ -45,8 +45,8 @@ module.exports = function(robot) {
       msg.reply(`Please use this function of ${robot.name} in DM.`)
       return;
     }
-    const from = msg.message.user;
-    const user = await userService.getUser(from.id);
+
+    const user = await userService.getUser(msg.message.user.id);
     if (!user) {
       msg.reply('I\'m sorry we could not find your user account. Please contact an admin');
       return;
@@ -57,19 +57,19 @@ module.exports = function(robot) {
     choiceMsg += `There are three options how you can setup ${robot.name} to do this:`;
     choiceMsg += `\n• Always send a bonusly when you send a ${robot.name} point.\n • Always prompt you to send a Bonusly point.\n • Never include a Bonusly point with ${robot.name} points.`;
     choiceMsg += `\n\nHow would you like to configure ${robot.name}? (You can always change this later!)\n[\`Always\`|\`Prompt\`|\`Never\`]`;
-    robot.messageRoom(from.slackId, choiceMsg);
+    robot.messageRoom(user.slackId, choiceMsg);
     dialog.addChoice(/always/i, async (msg2) => {
-      await userService.setBonuslyResponse(from, BonuslyResponse.always);
+      await userService.setBonuslyResponse(user, BonuslyResponse.always);
       msg.reply(`Thank you! We've updated your ${robot.name}->bonusly integration settings`);
       return;
     });
     dialog.addChoice(/prompt/i, async (msg2) => {
-      await userService.setBonuslyResponse(from, BonuslyResponse.promptEveryTime);
+      await userService.setBonuslyResponse(user, BonuslyResponse.promptEveryTime);
       msg.reply(`Thank you! We've updated your ${robot.name}->bonusly integration settings`);
       return;
     });
     dialog.addChoice(/never/i, async (msg2) => {
-      await userService.setBonuslyResponse(from, BonuslyResponse.never);
+      await userService.setBonuslyResponse(user, BonuslyResponse.never);
       msg.reply(`Thank you! We've updated your ${robot.name}->bonusly integration settings`);
       return;
     });
@@ -115,12 +115,12 @@ module.exports = function(robot) {
       choiceMsg += `\n\nHow would you like to configure ${robot.name}? (You can always change this later!)\n[\`Always\`|\`Prompt\`|\`Never\`]`;
       robot.messageRoom(event.sender.slackId, choiceMsg);
       dialog.addChoice(/always/i, async (msg) => {
-        await userService.setBonuslyResponse(from, BonuslyResponse.always);
+        await userService.setBonuslyResponse(event.sender, BonuslyResponse.always);
         await bonuslyService.sendBonus(event)
         return;
       });
       dialog.addChoice(/prompt/i, async (msg) => {
-        await userService.setBonuslyResponse(from, BonuslyResponse.promptEveryTime);
+        await userService.setBonuslyResponse(event.sender, BonuslyResponse.promptEveryTime);
         robot.messageRoom(event.sender.slackId, `In that case, do you want to send <@${event.recipient.slackId}> a Bonusly?\n[\`Yes\`|\`No\`]`);
         dialog.addChoice(/yes/i, async (msg2) => {
           await bonuslyService.sendBonus(event);
@@ -132,7 +132,7 @@ module.exports = function(robot) {
         });
       });
       dialog.addChoice(/never/i, async (msg) => {
-        await userService.setBonuslyResponse(from, BonuslyResponse.never);
+        await userService.setBonuslyResponse(event.sender, BonuslyResponse.never);
         robot.messageRoom(event.sender.slackId, `Alright! No worries. If you ever change your mind we can change your mind just let me know!`);
         return;
       });
