@@ -57,7 +57,7 @@ module.exports = function(robot) {
     choiceMsg += `There are three options how you can setup ${robot.name} to do this:`;
     choiceMsg += `\n• Always send a bonusly when you send a ${robot.name} point.\n • Always prompt you to send a Bonusly point.\n • Never include a Bonusly point with ${robot.name} points.`;
     choiceMsg += `\n\nHow would you like to configure ${robot.name}? (You can always change this later!)\n[\`Always\`|\`Prompt\`|\`Never\`]`;
-    robot.messageRoom(event.sender.slackId, choiceMsg);
+    robot.messageRoom(from.slackId, choiceMsg);
     dialog.addChoice(/always/i, async (msg2) => {
       await userService.setBonuslyResponse(from, BonuslyResponse.always);
       msg.reply(`Thank you! We've updated your ${robot.name}->bonusly integration settings`);
