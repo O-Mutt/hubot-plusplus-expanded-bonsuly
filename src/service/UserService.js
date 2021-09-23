@@ -1,3 +1,4 @@
+const { MongoClient } = require('mongodb');
 
 class UserService {
   constructor(robot, procVars) {
