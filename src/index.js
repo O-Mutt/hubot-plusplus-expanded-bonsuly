@@ -139,8 +139,8 @@ module.exports = function(robot) {
       return;
     }
 
-    if (event.direction !== '++' || event.direction !== '+') {
-      robot.logger.debug(`Points were taken away, not given. We won't talk to bonusly for this one.\n${JSON.stringify(event)}`);
+    if (event.direction !== '++' && event.direction !== '+') {
+      robot.logger.debug(`Points were taken away, not given. We won't talk to bonusly for this one.\n${JSON.stringify(event.direction)}`);
       return;
     }
 
