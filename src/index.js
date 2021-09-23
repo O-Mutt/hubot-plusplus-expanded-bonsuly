@@ -89,7 +89,7 @@ module.exports = function(robot) {
    * @returns 
    */
   async function handlePlusPlus(event) {
-    if (event.sender.slackEmail && event.recipient.slackEmail) {
+    if (!event.sender.slackEmail || !event.recipient.slackEmail) {
       const message = `<@${event.sender.slackId}> is trying to send to <@${event.recipient.slackId}> but the one of the emails are missing. Sender: [${event.sender.slackEmail}], Recipient: [${event.recipient.slackEmail}]`;
       robot.logger.error(message);
       robot.emit('plus-plus-failure', {
