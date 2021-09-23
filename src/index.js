@@ -30,6 +30,8 @@ module.exports = function(robot) {
   const userService = new UserService(robot, procVars);
   const bonuslyService = new BonuslyService(robot, procVars);
 
+  const switchBoard = new Conversation(robot);
+
   if (!procVars.bonuslyApiKey) {
     robot.logger.error('hubot-plusplus-expanded-bonusly is installed but the bonusly api key is not configured');
     return;
@@ -96,8 +98,6 @@ module.exports = function(robot) {
       });
       return;
     }
-
-    const switchBoard = new Conversation(robot);
 
     if (!event.sender.bonuslyResponse) {
       // check with user how they want to handle hubot points/bonusly bonuses
