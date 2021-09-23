@@ -9,7 +9,7 @@ module.exports = function(robot, scripts) {
     if (exists) {
       const ref = fs.readdirSync(scriptsPath);
       const results = [];
-      for (const i = 0, len = ref.length; i < len; i++) {
+      for (let i = 0, len = ref.length; i < len; i++) {
         const script = ref[i];
         if (scripts && scripts.indexOf('*') < 0) {
           if (scripts.indexOf(script) > -1) {
