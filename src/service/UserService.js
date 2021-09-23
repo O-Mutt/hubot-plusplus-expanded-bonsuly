@@ -1,5 +1,5 @@
 
-export class UserService {
+class UserService {
   constructor(robot, procVars) {
     this.db = undefined;
     this.robot = robot;
@@ -51,3 +51,5 @@ export class UserService {
     return;
   }
 }
+
+module.exports = UserService;

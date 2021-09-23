@@ -1,6 +1,6 @@
 const Axios = require('axios');
 
-export class BonuslyService {
+class BonuslyService {
   constructor(robot, procVars) {
     this.robot = robot;
     this.apiKey = procVars.bonuslyApiKey;
@@ -34,3 +34,5 @@ export class BonuslyService {
     return resp;
   }
 }
+
+module.exports = BonuslyService;
