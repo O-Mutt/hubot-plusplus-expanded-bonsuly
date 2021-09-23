@@ -26,6 +26,7 @@ module.exports = function(robot) {
   const procVars = {};
   procVars.mongoUri = process.env.MONGO_URI || 'mongodb://localhost/plusPlus';
   procVars.bonuslyApiKey = process.env.BONUSLY_API_KEY;
+  procVars.bonuslyUri = process.env.BONUSLY_URI;
 
   const userService = new UserService(robot, procVars);
   const bonuslyService = new BonuslyService(robot, procVars);
