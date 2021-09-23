@@ -21,6 +21,7 @@ const BonuslyService = require('./service/BonuslyService');
 
 module.exports = function(robot) {
   "use strict";
+
   const procVars = {};
   procVars.mongoUri = process.env.MONGO_URI || 'mongodb://localhost/plusPlus';
   procVars.bonuslyApiKey = process.env.BONUSLY_API_KEY;
@@ -34,7 +35,7 @@ module.exports = function(robot) {
   }
 
   robot.on('plus-plus', handlePlusPlus);
-  robot.respond(/.*change.*bonusly\s?(?:configuration|config|response|setting).*/i, changeBonuslyConfig);
+  robot.respond(/.*change.*bonusly\s?(?:configuration|config|response|setting).*/ig, changeBonuslyConfig);
   
   async function changeBonuslyConfig(msg) {
     if (msg.message.room[0] !== 'D' && msg.message.room !== 'Shell') {
@@ -42,7 +43,7 @@ module.exports = function(robot) {
       return;
     }
     const from = msg.message.user;
-    const user = userService.getUser(from.id);
+    const user = await userService.getUser(from.id);
     if (!user) {
       msg.reply('I\'m sorry we could not find your user account. Please contact an admin');
       return;
