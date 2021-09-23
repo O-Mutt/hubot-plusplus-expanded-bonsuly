@@ -30,7 +30,7 @@ module.exports = function(robot) {
   const userService = new UserService(robot, procVars);
   const bonuslyService = new BonuslyService(robot, procVars);
 
-  if (!this.procVars.bonuslyApiKey) {
+  if (!procVars.bonuslyApiKey) {
     robot.logger.error('hubot-plusplus-expanded-bonusly is installed but the bonusly api key is not configured');
     return;
   }
