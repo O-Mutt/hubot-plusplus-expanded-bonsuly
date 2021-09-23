@@ -1,0 +1,36 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "jest": true
+    },
+    "extends": [
+        "airbnb-base",
+        "plugin:jest/recommended"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+    "rules": {
+        "max-len": "off",
+        "func-names": [ "off" ],
+        "prefer-arrow-callback": "off",
+        "new-cap": "off",
+        "no-unused-vars": "warn",
+        "no-await-in-loop": "off",
+        "no-restricted-syntax": "off",
+        "no-param-reassign": "off",
+        "no-plusplus": "off",
+        "no-else-return": "off",
+        "jest/no-setup-in-describe": "off",
+        "no-underscore-dangle": "off"
+    },
+    "plugins": [
+        "jest"
+    ]
+}

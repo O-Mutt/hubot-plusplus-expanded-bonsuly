@@ -10,6 +10,9 @@
   "license": "MIT",
   "devDependencies": {
     "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-jest": "^24.4.2",
+    "eslint-plugin-node": "^11.1.0",
     "hubot-test-helper": "^1.9.0",
     "jest": "^27.2.1"
   },

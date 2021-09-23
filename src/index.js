@@ -36,7 +36,7 @@ module.exports = function(robot) {
   robot.on('plus-plus', handlePlusPlus);
   robot.respond(/.*change.*bonusly\s?(?:configuration|config|response|setting).*/i, changeBonuslyConfig);
   
-  function changeBonuslyConfig(msg) {
+  async function changeBonuslyConfig(msg) {
     if (msg.message.room[0] !== 'D' && msg.message.room !== 'Shell') {
       msg.reply(`Please use this function of ${robot.name} in DM.`)
       return;
@@ -54,17 +54,17 @@ module.exports = function(robot) {
     choiceMsg += `\n• Always send a bonusly when you send a ${robot.name} point.\n • Always prompt you to send a Bonusly point.\n • Never include a Bonusly point with ${robot.name} points.`;
     choiceMsg += `\n\nHow would you like to configure ${hubot.name}? (You can always change this later!)\n[\`Always\`|\`Prompt\`|\`Never\`]`;
     robot.messageRoom(event.sender.slackId, choiceMsg);
-    dialog.addChoice(/always/i, (msg) => {
+    dialog.addChoice(/always/i, async (msg2) => {
       await userService.setBonuslyResponse(from, BonuslyResponse.always);
       msg.reply(`Thank you! We've updated your ${robot.name}->bonusly integration settings`);
       return;
     });
-    dialog.addChoice(/prompt/i, (msg) => {
+    dialog.addChoice(/prompt/i, async (msg2) => {
       await userService.setBonuslyResponse(from, BonuslyResponse.promptEveryTime);
       msg.reply(`Thank you! We've updated your ${robot.name}->bonusly integration settings`);
       return;
     });
-    dialog.addChoice(/never/i, (msg) => {
+    dialog.addChoice(/never/i, async (msg2) => {
       await userService.setBonuslyResponse(from, BonuslyResponse.never);
       msg.reply(`Thank you! We've updated your ${robot.name}->bonusly integration settings`);
       return;
@@ -84,7 +84,7 @@ module.exports = function(robot) {
    * @param {object} event.msg the msg from hubot that the event originated from
    * @returns 
    */
-  function handlePlusPlus(event) {
+  async function handlePlusPlus(event) {
     if (event.sender.slackEmail && event.recipient.slackEmail) {
       const message = `<@${event.sender.slackId}> is trying to send to <@${event.recipient.slackId}> but the one of the emails are missing. Sender: [${event.sender.slackEmail}], Recipient: [${event.recipient.slackEmail}]`;
       robot.logger.error(message);
@@ -112,24 +112,24 @@ module.exports = function(robot) {
       choiceMsg += `\n• Always send a bonusly when you send a ${robot.name} point.\n • Always prompt you to send a Bonusly point.\n • Never include a Bonusly point with ${robot.name} points.`;
       choiceMsg += `\n\nHow would you like to configure ${hubot.name}? (You can always change this later!)\n[\`Always\`|\`Prompt\`|\`Never\`]`;
       robot.messageRoom(event.sender.slackId, choiceMsg);
-      dialog.addChoice(/always/i, (msg) => {
+      dialog.addChoice(/always/i, async (msg) => {
         await userService.setBonuslyResponse(from, BonuslyResponse.always);
         await bonuslyService.sendBonus(event)
         return;
       });
-      dialog.addChoice(/prompt/i, (msg) => {
+      dialog.addChoice(/prompt/i, async (msg) => {
         await userService.setBonuslyResponse(from, BonuslyResponse.promptEveryTime);
         robot.messageRoom(event.sender.slackId, `In that case, do you want to send <@${event.recipient.slackId}> a Bonusly?\n[\`Yes\`|\`No\`]`);
-        dialog.addChoice(/yes/i, (msg2) => {
+        dialog.addChoice(/yes/i, async (msg2) => {
           await bonuslyService.sendBonus(event);
           return
         });
-        dialog.addChoice(/no/i, (msg2) => {
+        dialog.addChoice(/no/i, async (msg2) => {
           robot.messageRoom(event.sender.slackId, `Ah, alright. Next time!`);
           return;
         });
       });
-      dialog.addChoice(/never/i, (msg) => {
+      dialog.addChoice(/never/i, async (msg) => {
         await userService.setBonuslyResponse(from, BonuslyResponse.never);
         robot.messageRoom(event.sender.slackId, `Alright! No worries. If you ever change your mind we can change your mind just let me know!`);
         return;
@@ -147,7 +147,7 @@ module.exports = function(robot) {
       robot.messageRoom(event.sender.slackId, `We sent a bonusly to <@${event.recipient.slackId}> w/ the ${robot.name} point.`);
     } else if (event.sender.bonuslyResponse === BonuslyResponse.promptEveryTime) {
       robot.messageRoom(event.sender.slackId, `You just gave <@${event.recipient.slackId}> a ${robot.name} point and Bonusly is enabled, would you like to send them a point on Bonusly as well?\n[\`Yes\`|\`No\`]`);
-      dialog.addChoice(/yes/i, (msg2) => {
+      dialog.addChoice(/yes/i, async (msg2) => {
         await bonuslyService.sendBonus(event);
         return
       });
