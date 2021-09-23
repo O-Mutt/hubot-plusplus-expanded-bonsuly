@@ -1,8 +1,8 @@
 
 const BonuslyResponse = {
-  never: "never",
-  promptEveryTime: "prompt",
-  always: "send"
+  NEVER: "never",
+  PROMPT: "prompt",
+  ALWAYS: "always"
 };
 
 module.exports = { BonuslyResponse };
