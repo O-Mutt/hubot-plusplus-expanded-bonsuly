@@ -1,3 +1,19 @@
+// Description:
+//   Integration point between hubot-plusplus-expanded and bonusly' api
+//
+//
+// Configuration:
+//   MONGO_URI: URI for the mongo database
+//   BONUSLY_API_KEY: Api key for connecting to the bonusly api
+//
+// Commands:
+//   change my bonusly configuration - used to change the config on when bonusly points are sent after a 
+//     hubot point
+// Event-Listener:
+//   plus-plus - Listens for this to send points
+//
+// Author: O-Mutt
+
 const { BonuslyResponse } = require('./service/BonuslyResponseEnum');
 const Conversation = require('hubot-conversation');
 const { UserService } = require('./service/UserService');
