@@ -14,8 +14,9 @@
 //
 // Author: O-Mutt
 
-const { BonuslyResponse } = require('./service/BonuslyResponseEnum');
 const Conversation = require('hubot-conversation');
+
+const { BonuslyResponse } = require('./service/BonuslyResponseEnum');
 const UserService = require('./service/UserService');
 const BonuslyService = require('./service/BonuslyService');
 
