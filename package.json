@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "$(npm bin)/jest --passWithNoTests"
+    "test": "$(npm bin)/jest --passWithNoTests",
+    "lint": "eslint src --fix"
   },
   "author": "Matt O'Keefe (O-Mutt) <Matt@OKeefe.dev>",
   "license": "MIT",
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-jest": "^24.4.2",
     "eslint-plugin-node": "^11.1.0",
     "hubot-test-helper": "^1.9.0",

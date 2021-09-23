@@ -1,8 +1,7 @@
 
-const BonuslyResponse = {
+export const BonuslyResponse = {
   never: "never",
   promptEveryTime: "prompt",
   always: "send"
 };
 
-export { BonuslyResponse };
