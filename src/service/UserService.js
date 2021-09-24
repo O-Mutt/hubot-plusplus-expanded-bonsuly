@@ -26,7 +26,7 @@ class UserService {
   }
 
   /**
-   * 
+   *
    * @param {string} slackId the slack id of the user to find
    * @returns the user from the scores db, undefined if not found
    */
@@ -34,7 +34,7 @@ class UserService {
     const db = await this.getDb();
 
     const dbUser = await db.collection('scores').findOne(
-      { slackId: slackId },
+      { slackId },
       { sort: { score: -1 } },
     );
 
@@ -44,12 +44,11 @@ class UserService {
   async setBonuslyResponse(user, response) {
     const db = await this.getDb();
 
-    const resp = await db.collection('scores').updateOne(
+    await db.collection('scores').updateOne(
       { slackId: user.slackId },
       { $set: { bonuslyResponse: response } },
       { sort: { score: -1 } },
     );
-    return;
   }
 }
 
