@@ -26,20 +26,20 @@ class BonuslyService {
       reason = buff.toString('UTF-8');
     }
 
-    let resp;
+    let data;
     try {
-      resp = await this.axios.post('/api/v1/bonuses', {
+      ({ data } = await this.axios.post('/api/v1/bonuses', {
         giver_email: event.sender.slackEmail,
         receiver_email: event.recipient.slackEmail,
         amount: event.amount,
         hashtag: '#excellence',
         reason,
-      });
+      }));
     } catch (e) {
       this.robot.logger.error('Error sending bonusly bonus', e);
     }
 
-    return resp;
+    return data;
   }
 }
 
