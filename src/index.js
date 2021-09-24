@@ -157,7 +157,9 @@ module.exports = function (robot) {
   function handleBonuslySent(e) {
     if (e.response.success === true) {
       robot.logger.debug('bonusly point was sent and we caught the event.');
-      e.event.msg.reply(`We sent a Bonusly bonus to <@${e.event.recipient.slackId}> for ${e.response.result.amount_with_currency}.\n<@${e.event.sender.slackId}> has ${e.response.result.giver.giving_balance_with_currency} left.`);
+      let bonuslyMessage = `We sent a Bonusly bonus to <@${e.event.recipient.slackId}> for ${e.response.result.amount_with_currency}.`;
+      bonuslyMessage += `\n<@${e.event.sender.slackId}> has ${e.response.result.giver.giving_balance_with_currency} (Bonusly) left.`;
+      e.event.msg.reply(bonuslyMessage);
     } else {
       robot.logger.error('there was an issue sending a bonus', e.response.message);
       e.event.msg.reply(`Sorry, there was an issue sending your bonusly bonus: ${e.response.message}`);
