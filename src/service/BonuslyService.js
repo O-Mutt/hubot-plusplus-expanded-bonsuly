@@ -9,7 +9,6 @@ class BonuslyService {
       baseURL: procVars.bonuslyUri,
       headers: {
         Authorization: `Bearer ${procVars.bonuslyApiKey}`,
-        'Content-Type': 'application/json',
       },
     });
   }
