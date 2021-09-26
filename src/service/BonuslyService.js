@@ -37,6 +37,7 @@ class BonuslyService {
       }));
     } catch (e) {
       this.robot.logger.error('Error sending bonusly bonus', e);
+      data = e.data;
     }
 
     return data;

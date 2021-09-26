@@ -7,7 +7,7 @@
 //   BONUSLY_API_KEY: Api key for connecting to the bonusly api
 //
 // Commands:
-//   change my bonusly configuration - used to change the config on when bonusly points are sent after a 
+//   change my bonusly configuration - used to change the config on when bonusly points are sent after a
 //     hubot point
 // Event-Listener:
 //   plus-plus - Listens for this to send points
@@ -29,8 +29,6 @@ module.exports = function (robot) {
   const userService = new UserService(robot, procVars);
   const bonuslyService = new BonuslyService(robot, procVars);
 
-  const switchBoard = new Conversation(robot);
-
   if (!procVars.bonuslyApiKey) {
     robot.logger.error('hubot-plusplus-expanded-bonusly is installed but the bonusly api key is not configured');
     return;
@@ -41,6 +39,7 @@ module.exports = function (robot) {
   robot.respond(/.*change.*bonusly\s?(?:integration)?\s?(?:configuration|config|response|setting|settings).*/ig, changeBonuslyConfig);
 
   async function changeBonuslyConfig(msg) {
+    const switchBoard = new Conversation(robot);
     if (msg.message.room[0] !== 'D' && msg.message.room !== 'Shell') {
       msg.reply(`Please use this function of ${robot.name} in DM.`);
       return;
@@ -56,7 +55,7 @@ module.exports = function (robot) {
     let choiceMsg = `${robot.name} is setup to allow you to also send a Bonusly point when you send a ${robot.name} point! `;
     choiceMsg += `There are three options how you can setup ${robot.name} to do this:`;
     choiceMsg += `\n• Always send a bonusly when you send a ${robot.name} point.\n • Always prompt you to send a Bonusly point.\n • Never include a Bonusly point with ${robot.name} points.`;
-    choiceMsg += `\n\nHow would you like to configure ${robot.name}? (You can always change this later!)\n[ \`Always\` | \`Prompt\` | \`Never\` ]`;
+    choiceMsg += `\n\nHow would you like to configure ${robot.name}? (You can always change this later by DMing me \`change my bonusly settings\`)\n[ \`Always\` | \`Prompt\` | \`Never\` ]`;
     robot.messageRoom(user.slackId, choiceMsg);
     dialog.addChoice(/always/i, async () => {
       await userService.setBonuslyResponse(user, BonuslyResponse.ALWAYS);
@@ -86,6 +85,7 @@ module.exports = function (robot) {
    * @returns 
    */
   async function handlePlusPlus(event) {
+    const switchBoard = new Conversation(robot);
     if (!event.sender.slackEmail || !event.recipient.slackEmail) {
       const message = `<@${event.sender.slackId}> is trying to send to <@${event.recipient.slackId}> but the one of the emails are missing. Sender: [${event.sender.slackEmail}], Recipient: [${event.recipient.slackEmail}]`;
       robot.logger.error(message);
@@ -118,7 +118,7 @@ module.exports = function (robot) {
       });
       dialog.addChoice(/prompt/i, async () => {
         await userService.setBonuslyResponse(event.sender, BonuslyResponse.PROMPT);
-        robot.messageRoom(event.sender.slackId, `In that case, do you want to send <@${event.recipient.slackId}> a Bonusly?\n[\`Yes\`|\`No\`]`);
+        robot.messageRoom(event.sender.slackId, `In that case, do you want to send <@${event.recipient.slackId}> a Bonusly?\n[ \`Yes\` | \`No\` ]`);
         dialog.addChoice(/yes/i, async () => {
           const response = await bonuslyService.sendBonus(event);
           robot.emit('plus-plus-bonusly-sent', { response, event });
