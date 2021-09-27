@@ -1,14 +1,16 @@
-const { test, expect, beforeAll, beforeEach } = require('@jest/globals');
+const {
+  test, expect, beforeAll, beforeEach,
+} = require('@jest/globals');
 const Helper = require('hubot-test-helper');
 const { MongoClient } = require('mongodb');
 const mongoUnit = require('mongo-unit');
-const ppb = require('../src/index');
+
 jest.mock('../src/service/UserService');
 
 let plusPlusBonusly;
 let room;
+let db;
 beforeAll(async function () {
-
   const url = await mongoUnit.start();
   const client = new MongoClient(url, {
     useNewUrlParser: true,
