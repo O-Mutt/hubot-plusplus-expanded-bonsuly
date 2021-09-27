@@ -9,6 +9,7 @@ class BonuslyService {
       baseURL: procVars.bonuslyUri,
       headers: {
         Authorization: `Bearer ${procVars.bonuslyApiKey}`,
+        'Content-Type': 'application/json',
       },
     });
   }
@@ -26,13 +27,18 @@ class BonuslyService {
       reason = buff.toString('UTF-8');
     }
 
+    let hashtag;
+    if (reason) {
+      hashtag = reason.match(/(#\w+)/i)[0] || '#qrafty';
+    }
+
     let data;
     try {
       ({ data } = await this.axios.post('/api/v1/bonuses', {
         giver_email: event.sender.slackEmail,
         receiver_email: event.recipient.slackEmail,
         amount: event.amount,
-        hashtag: '#excellence',
+        hashtag,
         reason,
       }));
     } catch (e) {
