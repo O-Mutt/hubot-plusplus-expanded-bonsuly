@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "$(npm bin)/jest --passWithNoTests --detectOpenHandles",
+    "test": "$(npm bin)/jest",
     "test:watch": "$(npm bin)/jest --passWithNoTests --watch --detectOpenHandles",
     "lint": "eslint src --fix"
   },
