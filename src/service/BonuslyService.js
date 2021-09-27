@@ -28,8 +28,9 @@ class BonuslyService {
     }
 
     let hashtag;
-    if (reason) {
-      hashtag = reason.match(/(#\w+)/i)[0] || '#qrafty';
+    if (reason && /(#\w+)/i.test(reason)) {
+      const match = reason.match(/(#\w+)/i);
+      hashtag = match ? match[0] : '#qrafty';
     }
 
     let data;

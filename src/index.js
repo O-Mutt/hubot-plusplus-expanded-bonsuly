@@ -103,11 +103,12 @@ module.exports = function (robot) {
         },
       },
     };
-    const dialog = switchBoard.startDialog(msg);
-    dialog.dialogTimeout = () => {
-      robot.messageRoom(event.sender.slackId, 'We didn\'t receive your response in time. Please try again.')
-    };
+
     if (!event.sender.bonuslyResponse) {
+      const dialog = switchBoard.startDialog(msg);
+      dialog.dialogTimeout = () => {
+        robot.messageRoom(event.sender.slackId, 'We didn\'t receive your response in time. Please try again.')
+      };
       // check with user how they want to handle hubot points/bonusly bonuses
       let choiceMsg = `${robot.name} is setup to allow you to also send a Bonusly point when you send a ${robot.name} point! `;
       choiceMsg += `There are three options how you can setup ${robot.name} to do this:`;
@@ -146,6 +147,10 @@ module.exports = function (robot) {
       const response = await bonuslyService.sendBonus(event);
       robot.emit('plus-plus-bonusly-sent', { response, event });
     } else if (event.sender.bonuslyResponse === BonuslyResponse.PROMPT) {
+      const dialog = switchBoard.startDialog(msg);
+      dialog.dialogTimeout = () => {
+        robot.messageRoom(event.sender.slackId, 'We didn\'t receive your response in time. Please try again.')
+      };
       robot.messageRoom(event.sender.slackId, `You just gave <@${event.recipient.slackId}> a ${robot.name} point and Bonusly is enabled, would you like to send them a point on Bonusly as well?\n[ \`Yes\` | \`No\` ]`);
       dialog.addChoice(/yes/i, async () => {
         const response = await bonuslyService.sendBonus(event);
