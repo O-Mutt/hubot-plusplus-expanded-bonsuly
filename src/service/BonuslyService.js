@@ -19,7 +19,7 @@ class BonuslyService {
    * @returns the user from the scores db, undefined if not found
    */
   async sendBonus(event) {
-    this.robot.logger.debug(`Sending a bonusly bonus to ${JSON.stringify(event.recipient)} from ${JSON.stringify(event.sender)}`);
+    this.robot.logger.debug(`Sending a bonusly bonus to ${JSON.stringify(event.recipient.slackEmail)} from ${JSON.stringify(event.sender.slackEmail)}`);
     let reason = `point given through ${this.robot.name}`;
     if (event.reason) {
       const buff = new Buffer.from(event.reason, 'base64');
@@ -37,7 +37,7 @@ class BonuslyService {
       }));
     } catch (e) {
       this.robot.logger.error('Error sending bonusly bonus', e);
-      data = e.data;
+      data = e.response.data;
     }
 
     return data;

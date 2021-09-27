@@ -82,7 +82,7 @@ module.exports = function (robot) {
    * @param {string} event.room the room the point was sent in
    * @param {string} event.cleanReason the clean (and encoded) reason for the point was sent
    * @param {object} event.msg the msg from hubot that the event originated from
-   * @returns 
+   * @returns
    */
   async function handlePlusPlus(event) {
     const switchBoard = new Conversation(robot);
@@ -104,6 +104,9 @@ module.exports = function (robot) {
       },
     };
     const dialog = switchBoard.startDialog(msg);
+    dialog.dialogTimeout = () => {
+      robot.messageRoom(event.sender.slackId, 'We didn\'t receive your response in time. Please try again.')
+    };
     if (!event.sender.bonuslyResponse) {
       // check with user how they want to handle hubot points/bonusly bonuses
       let choiceMsg = `${robot.name} is setup to allow you to also send a Bonusly point when you send a ${robot.name} point! `;
