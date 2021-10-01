@@ -21,7 +21,7 @@
     "mongo-unit": "^2.0.1"
   },
   "engines": {
-    "node": "^16"
+    "node": "^16.x.x"
   },
   "directories": {
     "test": "test"
