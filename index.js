@@ -1,14 +1,12 @@
-var fs = require('fs');
+const fs = require('fs');
+const path = require('path');
 
-var path = require('path');
-
-module.exports = function(robot, scripts) {
-  'use strict';
+module.exports = (robot, scripts) => {
   const scriptsPath = path.resolve(__dirname, 'src');
-  return fs.exists(scriptsPath, function(exists) {
+  return fs.exists(scriptsPath, (exists) => {
+    const results = [];
     if (exists) {
       const ref = fs.readdirSync(scriptsPath);
-      const results = [];
       for (let i = 0, len = ref.length; i < len; i++) {
         const script = ref[i];
         if (scripts && scripts.indexOf('*') < 0) {
@@ -19,7 +17,7 @@ module.exports = function(robot, scripts) {
           results.push(robot.loadFile(scriptsPath, script));
         }
       }
-      return results;
     }
+    return results;
   });
 };
