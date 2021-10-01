@@ -12,6 +12,7 @@ class BonuslyService {
         'Content-Type': 'application/json',
       },
     });
+    this.defaultReason = procVars.bonuslyDefaultReason || '#1team1score';
   }
 
   /**
@@ -27,10 +28,10 @@ class BonuslyService {
       reason = buff.toString('UTF-8');
     }
 
-    let hashtag;
+    let hashtag = this.defaultReason;
     if (reason && /(#\w+)/i.test(reason)) {
       const match = reason.match(/(#\w+)/i);
-      hashtag = match ? match[0] : '#qrafty';
+      hashtag = match ? match[0] : this.defaultReason;
     }
 
     let data;

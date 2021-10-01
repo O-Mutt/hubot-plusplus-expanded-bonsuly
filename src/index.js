@@ -16,15 +16,13 @@
 
 const Conversation = require('hubot-conversation');
 
-const { BonuslyResponse } = require('./service/BonuslyResponseEnum');
-const UserService = require('./service/UserService');
-const BonuslyService = require('./service/BonuslyService');
+const { BonuslyResponse } = require('./lib/service/BonuslyResponseEnum');
+const UserService = require('./lib/service/UserService');
+const BonuslyService = require('./lib/service/BonuslyService');
+const Helpers = require('./lib/helpers');
 
 module.exports = function (robot) {
-  const procVars = {};
-  procVars.mongoUri = process.env.MONGO_URI || 'mongodb://localhost/plusPlus';
-  procVars.bonuslyApiKey = process.env.BONUSLY_API_KEY;
-  procVars.bonuslyUri = process.env.BONUSLY_URI;
+  const procVars = Helpers.createProcVars(process.env);
 
   const userService = new UserService(robot, procVars);
   const bonuslyService = new BonuslyService(robot, procVars);
