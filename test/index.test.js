@@ -5,7 +5,7 @@ const Helper = require('hubot-test-helper');
 const { MongoClient } = require('mongodb');
 const mongoUnit = require('mongo-unit');
 
-jest.mock('../src/service/UserService');
+jest.mock('../src/lib/service/UserService');
 
 let plusPlusBonusly;
 let room;
