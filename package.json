@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "^16.x.x",
+    "npm": "^7.x.x"
+  },
   "scripts": {
     "test": "jest --watchAll=false --detectOpenHandles --forceExit",
     "test:watch": "jest --passWithNoTests --watch --detectOpenHandles",
@@ -19,9 +23,6 @@
     "hubot-test-helper": "^1.9.0",
     "jest": "^27.2.1",
     "mongo-unit": "^2.0.1"
-  },
-  "engines": {
-    "node": "^16.x.x"
   },
   "directories": {
     "test": "test"
