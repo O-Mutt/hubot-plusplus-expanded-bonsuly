@@ -54,7 +54,7 @@ module.exports = function (robot) {
     // const dialog = switchBoard.startDialog(msg);
     const message = createChoiceBlocks();
     const web = new WebClient(robot.adapter.options.token);
-    await web.chat.postMessage({ channel: user.slackId, blocks: message });
+    await web.chat.postMessage({ text: `${Helpers.capitalizeFirstLetter(robot.name)} Bonusly Integration Settings`, channel: user.slackId, blocks: message });
     /* robot.messageRoom(user.slackId, choiceMsg);
     dialog.addChoice(/always/i, async () => {
       await userService.setBonuslyResponse(user, BonuslyResponse.ALWAYS);
