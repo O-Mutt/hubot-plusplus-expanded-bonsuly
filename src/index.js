@@ -53,8 +53,36 @@ module.exports = function (robot) {
 
     // const dialog = switchBoard.startDialog(msg);
     const message = createChoiceMessage();
-    robot.logger.debug(message);
-    robot.messageRoom(user.slackId, message);
+    const web = new WebClient(robot.adapter.options.token);
+    try {
+      const resp = await web.chat.postMessage({
+        text: `${Helpers.capitalizeFirstLetter(robot.name)} Bonusly Integration settings`,
+        channel: user.slackId,
+        attachments: message.attachments,
+        as_user: false,
+        username: robot.name,
+        icon_url: robot.icon_url,
+        icon_emoji: robot.icon_emoji,
+      });
+      robot.logger.debug('post message worked', {
+        text: `${Helpers.capitalizeFirstLetter(robot.name)} Bonusly Integration settings`,
+        channel: user.slackId,
+        attachments: message.attachments,
+        as_user: false,
+        username: robot.name,
+        icon_url: robot.icon_url,
+        icon_emoji: robot.icon_emoji,
+      });
+      robot.logger.debug('post message worked resp', resp);
+    } catch (e) {
+      robot.logger.error('post message:', e);
+    }
+    /* try {
+      robot.messageRoom(user.slackId, message);
+      robot.logger.debug('message room worked', message);
+    } catch (e) {
+      robot.logger.error('msg send:', e);
+    } */
 
     /* robot.messageRoom(user.slackId, choiceMsg);
     dialog.addChoice(/always/i, async () => {
