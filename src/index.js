@@ -101,6 +101,7 @@ module.exports = function (robot) {
 
     if (!event.sender.bonuslyResponse) {
       const message = createChoiceMessage();
+      robot.logger.debug(message);
       robot.messageRoom(event.sender.slackId, message);
 
       /* dialog.addChoice(/always/i, async () => {
