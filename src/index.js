@@ -55,14 +55,31 @@ module.exports = function (robot) {
     const message = createChoiceAttachments();
     const web = new WebClient(robot.adapter.options.token);
     try {
-      await web.chat.postMessage({ text: `${Helpers.capitalizeFirstLetter(robot.name)} Bonusly Integration settings`, channel: user.slackId, attachments: message });
-      robot.logger.debug('message room worked');
+      const resp = await web.chat.postMessage({
+        text: `${Helpers.capitalizeFirstLetter(robot.name)} Bonusly Integration settings`,
+        channel: user.slackId,
+        attachments: message,
+        as_user: false,
+        username: robot.name,
+        icon_url: robot.icon_url,
+        icon_emoji: robot.icon_emoji,
+      });
+      robot.logger.debug('post message worked', {
+        text: `${Helpers.capitalizeFirstLetter(robot.name)} Bonusly Integration settings`,
+        channel: user.slackId,
+        attachments: message,
+        as_user: false,
+        username: robot.name,
+        icon_url: robot.icon_url,
+        icon_emoji: robot.icon_emoji,
+      });
+      robot.logger.debug('post message worked resp', resp);
     } catch (e) {
       robot.logger.error('post message:', e);
     }
     try {
       robot.messageRoom(user.slackId, { message });
-      robot.logger.debug('message room worked');
+      robot.logger.debug('message room worked', { message });
     } catch (e) {
       robot.logger.error('msg send:', e);
     }
