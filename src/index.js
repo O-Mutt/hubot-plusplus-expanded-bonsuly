@@ -54,7 +54,16 @@ module.exports = function (robot) {
     // const dialog = switchBoard.startDialog(msg);
     const message = createChoiceAttachments();
     const web = new WebClient(robot.adapter.options.token);
-    await web.chat.postMessage({ channel: user.slackId, attachments: message });
+    try {
+      await web.chat.postMessage({ text: `${Helpers.capitalizeFirstLetter(robot.name)} Bonusly Integration settings`, channel: user.slackId, attachments: message });
+    } catch (e) {
+      robot.logger.error('post message:', e);
+    }
+    try {
+      msg.messageRoom(user.slackId, message);
+    } catch (e) {
+      robot.logger.error('msg send:', e);
+    }
     /* robot.messageRoom(user.slackId, choiceMsg);
     dialog.addChoice(/always/i, async () => {
       await userService.setBonuslyResponse(user, BonuslyResponse.ALWAYS);
@@ -174,7 +183,7 @@ module.exports = function (robot) {
   }
 
   function createChoiceAttachments() {
-    const blocks = Message().blocks(
+    const message = Message().blocks(
       Blocks.Section({ text: `${Helpers.capitalizeFirstLetter(robot.name)} is setup to allow you to also send a Bonusly point when you send a ${Helpers.capitalizeFirstLetter(robot.name)} point!` }),
       Blocks.Section({ text: `_There are three options how you can setup ${Helpers.capitalizeFirstLetter(robot.name)} to do this_` }),
       Blocks.Section({ text: `• *Always* send a bonusly when you send a ${Helpers.capitalizeFirstLetter(robot.name)} point.\n• *Prompt* every time to send a ${Helpers.capitalizeFirstLetter(robot.name)} point to include a Bonusly point.\n• *Never* include a Bonusly point with ${Helpers.capitalizeFirstLetter(robot.name)} points.` }),
@@ -187,10 +196,12 @@ module.exports = function (robot) {
         ),
       Blocks.Divider(),
       Blocks.Section({ text: `:question: These settings may be changed at any time, just DM <@${robot.name}> \`change my bonusly settings\`` }),
-    ).buildToJSON();
-    const attachments = [{ color: '#FEA500', blocks }];
+    ).buildToObject();
+    robot.logger.debug('Message:', message);
+    robot.logger.debug('Blocks:', message.blocks);
+    const attachments = [{ color: '#FEA500', blocks: message.blocks }];
 
-    robot.logger.debug('Message:', attachments);
+    robot.logger.debug('Attachements:', attachments);
     return attachments;
   }
 };
