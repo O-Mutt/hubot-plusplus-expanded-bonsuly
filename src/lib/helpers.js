@@ -4,6 +4,7 @@ function createProcVars(env) {
   procVars.bonuslyApiKey = env.BONUSLY_API_KEY;
   procVars.bonuslyUri = env.BONUSLY_URI;
   procVars.bonuslyDefaultReason = env.BONUSLY_DEFAULT_REASON;
+  procVars.baseUrl = env.HUBOT_ACTION_BASE_URL;
   return procVars;
 }
 
