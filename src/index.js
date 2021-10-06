@@ -36,7 +36,7 @@ module.exports = function (robot) {
 
   robot.on('plus-plus', handlePlusPlus);
   robot.on('plus-plus-bonusly-sent', handleBonuslySent);
-  robot.respond(/.*change.*bonusly\s?(?:integration)?\s?(?:configuration|config|response|setting|settings).*/ig, changeBonuslyConfig);
+  robot.respond(/(?:.*change)?.*bonusly\s?(?:integration)?\s?(?:configuration|config|response|setting|settings).*/ig, changeBonuslyConfig);
 
   async function changeBonuslyConfig(msg) {
     const switchBoard = new Conversation(robot);
@@ -52,9 +52,9 @@ module.exports = function (robot) {
     }
 
     // const dialog = switchBoard.startDialog(msg);
-    const message = createChoiceBlocks(user.slackId);
+    const message = createChoiceBlocks();
     const web = new WebClient(robot.adapter.options.token);
-    await web.chat.postMessage(message);
+    await web.chat.postMessage({ channel: user.slackId, blocks: message });
     /* robot.messageRoom(user.slackId, choiceMsg);
     dialog.addChoice(/always/i, async () => {
       await userService.setBonuslyResponse(user, BonuslyResponse.ALWAYS);
@@ -173,14 +173,11 @@ module.exports = function (robot) {
     }
   }
 
-  function createChoiceBlocks(channelId) {
-    const message = Message({
-      channel: channelId,
-      text: `${Helpers.capitalizeFirstLetter(robot.name)} Bonusly Integration Settings`,
-    }).blocks(
+  function createChoiceBlocks() {
+    const message = Message().blocks(
       Blocks.Section({ text: `${Helpers.capitalizeFirstLetter(robot.name)} is setup to allow you to also send a Bonusly point when you send a ${Helpers.capitalizeFirstLetter(robot.name)} point!` }),
       Blocks.Section({ text: `_There are three options how you can setup ${Helpers.capitalizeFirstLetter(robot.name)} to do this_` }),
-      Blocks.Section({ text: `• Always send a bonusly when you send a ${Helpers.capitalizeFirstLetter(robot.name)} point.\n• Prompt every time to send a ${Helpers.capitalizeFirstLetter(robot.name)} point to include a Bonusly point.\n• Never include a Bonusly point with ${Helpers.capitalizeFirstLetter(robot.name)} points.` }),
+      Blocks.Section({ text: `• *Always* send a bonusly when you send a ${Helpers.capitalizeFirstLetter(robot.name)} point.\n• *Prompt* every time to send a ${Helpers.capitalizeFirstLetter(robot.name)} point to include a Bonusly point.\n• *Never* include a Bonusly point with ${Helpers.capitalizeFirstLetter(robot.name)} points.` }),
       Blocks.Divider(),
       Blocks.Actions()
         .elements(
@@ -189,7 +186,7 @@ module.exports = function (robot) {
           Elements.Button({ text: 'Never', actionId: 'never' }).danger(),
         ),
       Blocks.Divider(),
-      Blocks.Section({ text: `These settings may be changed at any time, just DM <@${robot.id}> \`change my bonusly settings\`` })
+      Blocks.Section({ text: `:question: These settings may be changed at any time, just DM <@${robot.name}> \`change my bonusly settings\`` }),
     ).buildToJSON();
     robot.logger.debug('Message:', message);
     return message;
