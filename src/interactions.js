@@ -6,7 +6,7 @@
 //  O'Mutt (Matthew O'Keefe)
 //
 module.exports = function (robot) {
-  robot.router.post(`${robot.name}/bonusly/settings`, (req, res) => {
+  robot.router.post('/bonusly/settings', (req, res) => {
     const data = req.body.payload ? JSON.parse(req.body.payload) : req.body;
     const response = data.bonuslyResponse;
     console.log(req);
