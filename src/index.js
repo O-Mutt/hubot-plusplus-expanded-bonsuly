@@ -176,6 +176,7 @@ module.exports = function (robot) {
   function createChoiceBlocks(channelId) {
     const message = Message({
       channel: channelId,
+      text: `${Helpers.capitalizeFirstLetter(robot.name)} Bonusly Integration Settings`,
     }).blocks(
       Blocks.Section({ text: `${Helpers.capitalizeFirstLetter(robot.name)} is setup to allow you to also send a Bonusly point when you send a ${Helpers.capitalizeFirstLetter(robot.name)} point!` }),
       Blocks.Section({ text: `_There are three options how you can setup ${Helpers.capitalizeFirstLetter(robot.name)} to do this_` }),
