@@ -53,6 +53,7 @@ module.exports = function (robot) {
 
     // const dialog = switchBoard.startDialog(msg);
     const message = createChoiceMessage();
+    robot.logger.debug(message);
     robot.messageRoom(user.slackId, message);
 
     /* robot.messageRoom(user.slackId, choiceMsg);
