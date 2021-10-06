@@ -171,23 +171,27 @@ module.exports = function (robot) {
   }
 
   function createChoiceMessage() {
-    const message = Message()
-      .text(`${Helpers.capitalizeFirstLetter(robot.name)} is setup to allow you to also send a Bonusly point when you send a ${Helpers.capitalizeFirstLetter(robot.name)} point!`)
-      .blocks(
-        Blocks.Section({ text: `_There are three options how you can setup ${Helpers.capitalizeFirstLetter(robot.name)} to do this_` }),
-        Blocks.Section({ text: `• Always send a bonusly when you send a ${Helpers.capitalizeFirstLetter(robot.name)} point.\n • Prompt every time to send a ${Helpers.capitalizeFirstLetter(robot.name)} point to include a Bonusly point.\n • Never include a Bonusly point with ${Helpers.capitalizeFirstLetter(robot.name)} points.` }),
-        Blocks.Divider(),
-        Blocks.Actions()
-          .elements(
-            Elements.Button({ text: 'Always', actionId: 'always' }).primary(),
-            Elements.Button({ text: 'Prompt', actionId: 'prompt' }),
-            Elements.Button({ text: 'Never', actionId: 'never' }).danger(),
-          ),
-        Blocks.Divider(),
-        Blocks.Section({ text: `These settings may be changed at any time, just DM <@${robot.id}> \`change my bonusly settings\`` })
-      )
-      .asUser(false)
-      .buildToJSON();
+    const message = {
+      attachments: [{
+        color: '#FEA500',
+        blocks: Message()
+          .blocks(
+            Blocks.Section({ text: `${Helpers.capitalizeFirstLetter(robot.name)} is setup to allow you to also send a Bonusly point when you send a ${Helpers.capitalizeFirstLetter(robot.name)} point!` }),
+            Blocks.Section({ text: `_There are three options how you can setup ${Helpers.capitalizeFirstLetter(robot.name)} to do this_` }),
+            Blocks.Section({ text: `• Always send a bonusly when you send a ${Helpers.capitalizeFirstLetter(robot.name)} point.\n • Prompt every time to send a ${Helpers.capitalizeFirstLetter(robot.name)} point to include a Bonusly point.\n • Never include a Bonusly point with ${Helpers.capitalizeFirstLetter(robot.name)} points.` }),
+            Blocks.Divider(),
+            Blocks.Actions()
+              .elements(
+                Elements.Button({ text: 'Always', actionId: 'always' }).primary(),
+                Elements.Button({ text: 'Prompt', actionId: 'prompt' }),
+                Elements.Button({ text: 'Never', actionId: 'never' }).danger(),
+              ),
+            Blocks.Divider(),
+            Blocks.Section({ text: `These settings may be changed at any time, just DM <@${robot.id}> \`change my bonusly settings\`` })
+          )
+          .buildToJSON(),
+      }],
+    };
     return message;
   }
 };
