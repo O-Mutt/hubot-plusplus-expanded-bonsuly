@@ -11,5 +11,4 @@ module.exports = function (robot) {
     const response = data.bonuslyResponse;
     console.log(req);
   });
-  console.log(robot);
 };

@@ -166,20 +166,14 @@ module.exports = function (robot) {
       Blocks.Divider(),
       Blocks.Actions()
         .elements(
-          Elements.Button({
-            text: 'Always', actionId: 'always', value: BonuslyResponse.ALWAYS, url: `${procVars.baseUrl}/bonusly/settings` 
-          }).primary(),
-          Elements.Button({
-            text: 'Prompt', actionId: 'prompt', value: BonuslyResponse.PROMPT, url: `${procVars.baseUrl}/bonusly/settings` 
-          }),
-          Elements.Button({
-            text: 'Never', actionId: 'never', value: BonuslyResponse.NEVER, url: `${procVars.baseUrl}/bonusly/settings` 
-          }).danger(),
+          Elements.Button({ text: 'Always', actionId: 'always', value: BonuslyResponse.ALWAYS }).primary(),
+          Elements.Button({ text: 'Prompt', actionId: 'prompt', value: BonuslyResponse.PROMPT }),
+          Elements.Button({ text: 'Never', actionId: 'never', value: BonuslyResponse.NEVER }).danger(),
         ),
       Blocks.Divider(),
       Blocks.Section({ text: `:question: These settings may be changed at any time, just DM <@${robot.name}> \`change my bonusly settings\`` }),
     ).buildToObject();
-    const message = { attachments: [{ color: '#FEA500', blocks: builder.blocks }] };
+    const message = { attachments: [{ response_url: `${procVars.baseUrl}/bonusly/settings`, color: '#FEA500', blocks: builder.blocks }] };
 
     return message;
   }
