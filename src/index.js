@@ -203,7 +203,7 @@ module.exports = function (robot) {
       Blocks.Divider(),
       Blocks.Section({ text: `:question: These settings may be changed at any time, just DM <@${robot.name}> \`change my bonusly settings\`` }),
     ).buildToObject();
-    const message = { attachments: [{ color: '#FEA500', callback_id: 'bonusly_settings', blocks: builder.blocks }] };
+    const message = { attachments: [{ color: '#FEA500', blocks: builder.blocks }] };
 
     return message;
   }
