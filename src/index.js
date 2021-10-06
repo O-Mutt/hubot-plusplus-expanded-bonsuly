@@ -53,43 +53,8 @@ module.exports = function (robot) {
 
     // const dialog = switchBoard.startDialog(msg);
     const message = createChoiceMessage();
-    const web = new WebClient(robot.adapter.options.token);
-    try {
-      const resp = await web.chat.postMessage({
-        text: `${Helpers.capitalizeFirstLetter(robot.name)} Bonusly Integration settings`,
-        channel: user.slackId,
-        attachments: message.attachments,
-        as_user: false,
-        username: robot.name,
-        icon_url: robot.icon_url,
-        icon_emoji: robot.icon_emoji,
-      });
-      robot.logger.debug('post message worked', {
-        text: `${Helpers.capitalizeFirstLetter(robot.name)} Bonusly Integration settings`,
-        channel: user.slackId,
-        attachments: message.attachments,
-        as_user: false,
-        username: robot.name,
-        icon_url: robot.icon_url,
-        icon_emoji: robot.icon_emoji,
-      });
-      robot.logger.debug('post message worked resp', resp);
-    } catch (e) {
-      robot.logger.error('post message:', e);
-    }
-    try {
-      robot.messageRoom(user.slackId, message);
-      robot.logger.debug('message room worked', message);
-    } catch (e) {
-      robot.logger.error('msg send:', e);
-    }
+    robot.messageRoom(user.slackId, message);
 
-    try {
-      msg.send(message);
-      robot.logger.debug('message worked', message);
-    } catch (e) {
-      robot.logger.error('msg send:', e);
-    }
     /* robot.messageRoom(user.slackId, choiceMsg);
     dialog.addChoice(/always/i, async () => {
       await userService.setBonuslyResponse(user, BonuslyResponse.ALWAYS);
@@ -119,7 +84,11 @@ module.exports = function (robot) {
    * @returns
    */
   async function handlePlusPlus(event) {
-    const switchBoard = new Conversation(robot);
+    if (event.direction !== '++' && event.direction !== '+') {
+      robot.logger.debug(`Points were taken away, not given. We won't talk to bonusly for this one.\n${JSON.stringify(event.direction)}`);
+      return;
+    }
+
     if (!event.sender.slackEmail || !event.recipient.slackEmail) {
       const message = `<@${event.sender.slackId}> is trying to send to <@${event.recipient.slackId}> but the one of the emails are missing. Sender: [${event.sender.slackEmail}], Recipient: [${event.recipient.slackEmail}]`;
       robot.logger.error(message);
@@ -130,26 +99,11 @@ module.exports = function (robot) {
       return;
     }
 
-    const msg = {
-      message: {
-        user: {
-          id: event.sender.slackId,
-        },
-      },
-    };
-
     if (!event.sender.bonuslyResponse) {
-      const dialog = switchBoard.startDialog(msg);
-      dialog.dialogTimeout = () => {
-        robot.messageRoom(event.sender.slackId, 'We didn\'t receive your response in time. Please try again.')
-      };
-      // check with user how they want to handle hubot points/bonusly bonuses
-      let choiceMsg = `${Helpers.capitalizeFirstLetter(robot.name)} is setup to allow you to also send a Bonusly point when you send a ${Helpers.capitalizeFirstLetter(robot.name)} point! `;
-      choiceMsg += `There are three options how you can setup ${Helpers.capitalizeFirstLetter(robot.name)} to do this:`;
-      choiceMsg += `\n• Always send a bonusly when you send a ${Helpers.capitalizeFirstLetter(robot.name)} point.\n • Prompt every time to send a ${Helpers.capitalizeFirstLetter(robot.name)} point to include a Bonusly point.\n • Never include a Bonusly point with ${Helpers.capitalizeFirstLetter(robot.name)} points.`;
-      choiceMsg += `\n\nHow would you like to configure ${Helpers.capitalizeFirstLetter(robot.name)}? (You can always change this later by DMing me \`change my bonusly settings\`)\n[ \`Always\` | \`Prompt\` | \`Never\` ]`;
-      robot.messageRoom(event.sender.slackId, choiceMsg);
-      dialog.addChoice(/always/i, async () => {
+      const message = createChoiceMessage();
+      robot.messageRoom(event.sender.slackId, message);
+
+      /* dialog.addChoice(/always/i, async () => {
         await userService.setBonuslyResponse(event.sender, BonuslyResponse.ALWAYS);
         const response = await bonuslyService.sendBonus(event);
         robot.emit('plus-plus-bonusly-sent', { response, event });
@@ -170,12 +124,7 @@ module.exports = function (robot) {
         robot.messageRoom(event.sender.slackId, 'Alright! No worries. If you ever change your mind we can change your mind just let me know (DM me `change my bonusly settings`)!');
       });
       return;
-    }
-
-    if (event.direction !== '++' && event.direction !== '+') {
-      robot.logger.debug(`Points were taken away, not given. We won't talk to bonusly for this one.\n${JSON.stringify(event.direction)}`);
-      return;
-    }
+    } */
 
     if (event.sender.bonuslyResponse === BonuslyResponse.ALWAYS) {
       const response = await bonuslyService.sendBonus(event);
@@ -216,9 +165,9 @@ module.exports = function (robot) {
       Blocks.Divider(),
       Blocks.Actions()
         .elements(
-          Elements.Button({ text: 'Always', actionId: 'always' }).primary(),
-          Elements.Button({ text: 'Prompt', actionId: 'prompt' }),
-          Elements.Button({ text: 'Never', actionId: 'never' }).danger(),
+          Elements.Button({ text: 'Always', actionId: 'always', value: BonuslyResponse.ALWAYS }).primary(),
+          Elements.Button({ text: 'Prompt', actionId: 'prompt', value: BonuslyResponse.PROMPT }),
+          Elements.Button({ text: 'Never', actionId: 'never', value: BonuslyResponse.NEVER }).danger(),
         ),
       Blocks.Divider(),
       Blocks.Section({ text: `:question: These settings may be changed at any time, just DM <@${robot.name}> \`change my bonusly settings\`` }),
