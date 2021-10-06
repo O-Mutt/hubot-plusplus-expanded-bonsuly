@@ -39,7 +39,6 @@ module.exports = function (robot) {
   robot.respond(/(?:.*change)?.*bonusly\s?(?:integration)?\s?(?:configuration|config|response|setting|settings).*/ig, changeBonuslyConfig);
 
   async function changeBonuslyConfig(msg) {
-    const switchBoard = new Conversation(robot);
     if (msg.message.room[0] !== 'D' && msg.message.room !== 'Shell') {
       msg.reply(`Please use this function of ${Helpers.capitalizeFirstLetter(robot.name)} in DM.`);
       return;
@@ -53,37 +52,8 @@ module.exports = function (robot) {
 
     // const dialog = switchBoard.startDialog(msg);
     const message = createChoiceMessage();
-    const web = new WebClient(robot.adapter.options.token);
-    try {
-      const resp = await web.chat.postMessage({
-        text: `${Helpers.capitalizeFirstLetter(robot.name)} Bonusly Integration settings`,
-        channel: user.slackId,
-        attachments: message.attachments,
-        as_user: false,
-        username: robot.name,
-        icon_url: robot.icon_url,
-        icon_emoji: robot.icon_emoji,
-      });
-      robot.logger.debug('post message worked', {
-        text: `${Helpers.capitalizeFirstLetter(robot.name)} Bonusly Integration settings`,
-        channel: user.slackId,
-        attachments: message.attachments,
-        as_user: false,
-        username: robot.name,
-        icon_url: robot.icon_url,
-        icon_emoji: robot.icon_emoji,
-      });
-      robot.logger.debug('post message worked resp', resp);
-    } catch (e) {
-      robot.logger.error('post message:', e);
-    }
-    /* try {
-      robot.messageRoom(user.slackId, message);
-      robot.logger.debug('message room worked', message);
-    } catch (e) {
-      robot.logger.error('msg send:', e);
-    } */
-    //msg.send(message)
+    msg.send(message);
+
     /* robot.messageRoom(user.slackId, choiceMsg);
     dialog.addChoice(/always/i, async () => {
       await userService.setBonuslyResponse(user, BonuslyResponse.ALWAYS);
