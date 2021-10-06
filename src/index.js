@@ -83,7 +83,7 @@ module.exports = function (robot) {
     } catch (e) {
       robot.logger.error('msg send:', e);
     } */
-
+    msg.send(message)
     /* robot.messageRoom(user.slackId, choiceMsg);
     dialog.addChoice(/always/i, async () => {
       await userService.setBonuslyResponse(user, BonuslyResponse.ALWAYS);
