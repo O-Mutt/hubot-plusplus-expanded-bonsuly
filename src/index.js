@@ -56,11 +56,13 @@ module.exports = function (robot) {
     const web = new WebClient(robot.adapter.options.token);
     try {
       await web.chat.postMessage({ text: `${Helpers.capitalizeFirstLetter(robot.name)} Bonusly Integration settings`, channel: user.slackId, attachments: message });
+      robot.logger.debug('message room worked');
     } catch (e) {
       robot.logger.error('post message:', e);
     }
     try {
-      robot.messageRoom(user.slackId, message);
+      robot.messageRoom(user.slackId, { message });
+      robot.logger.debug('message room worked');
     } catch (e) {
       robot.logger.error('msg send:', e);
     }
