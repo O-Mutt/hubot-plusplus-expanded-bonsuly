@@ -187,7 +187,7 @@ module.exports = function (robot) {
         ),
       Blocks.Divider(),
       Blocks.Section({ text: `:question: These settings may be changed at any time, just DM <@${robot.name}> \`change my bonusly settings\`` }),
-    );
+    ).buildToJSON();
     const attachments = [{ color: '#FEA500', blocks }];
 
     robot.logger.debug('Message:', attachments);
