@@ -125,12 +125,13 @@ module.exports = function (robot) {
       });
       return;
     } */
+    }
 
     if (event.sender.bonuslyResponse === BonuslyResponse.ALWAYS) {
       const response = await bonuslyService.sendBonus(event);
       robot.emit('plus-plus-bonusly-sent', { response, event });
     } else if (event.sender.bonuslyResponse === BonuslyResponse.PROMPT) {
-      const dialog = switchBoard.startDialog(msg);
+      /* const dialog = switchBoard.startDialog(msg);
       dialog.dialogTimeout = () => {
         robot.messageRoom(event.sender.slackId, 'We didn\'t receive your response in time. Please try again.');
       };
@@ -141,7 +142,7 @@ module.exports = function (robot) {
       });
       dialog.addChoice(/no/i, () => {
         robot.messageRoom(event.sender.slackId, 'Ah, alright. Next time!');
-      });
+      }); */
     }
   }
 
