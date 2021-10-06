@@ -60,7 +60,7 @@ module.exports = function (robot) {
       robot.logger.error('post message:', e);
     }
     try {
-      msg.messageRoom(user.slackId, message);
+      robot.messageRoom(user.slackId, message);
     } catch (e) {
       robot.logger.error('msg send:', e);
     }
@@ -197,11 +197,8 @@ module.exports = function (robot) {
       Blocks.Divider(),
       Blocks.Section({ text: `:question: These settings may be changed at any time, just DM <@${robot.name}> \`change my bonusly settings\`` }),
     ).buildToObject();
-    robot.logger.debug('Message:', message);
-    robot.logger.debug('Blocks:', message.blocks);
     const attachments = [{ color: '#FEA500', blocks: message.blocks }];
 
-    robot.logger.debug('Attachements:', attachments);
     return attachments;
   }
 };
