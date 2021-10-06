@@ -166,15 +166,9 @@ module.exports = function (robot) {
       Blocks.Divider(),
       Blocks.Actions()
         .elements(
-          Elements.Button({
-            name: 'always', text: 'Always', actionId: 'always', value: BonuslyResponse.ALWAYS,
-          }).primary(),
-          Elements.Button({
-            name: 'prompt', text: 'Prompt', actionId: 'prompt', value: BonuslyResponse.PROMPT,
-          }),
-          Elements.Button({
-            name: 'never', text: 'Never', actionId: 'never', value: BonuslyResponse.NEVER,
-          }).danger(),
+          Elements.Button({ text: 'Always', actionId: 'always', value: BonuslyResponse.ALWAYS }).primary(),
+          Elements.Button({ text: 'Prompt', actionId: 'prompt', value: BonuslyResponse.PROMPT }),
+          Elements.Button({ text: 'Never', actionId: 'never', value: BonuslyResponse.NEVER }).danger(),
         ),
       Blocks.Divider(),
       Blocks.Section({ text: `:question: These settings may be changed at any time, just DM <@${robot.name}> \`change my bonusly settings\`` }),
