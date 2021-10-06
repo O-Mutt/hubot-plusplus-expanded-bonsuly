@@ -31,7 +31,8 @@
     "@jest/globals": "^27.2.2",
     "axios": "^0.21.4",
     "hubot-conversation": "^1.1.1",
-    "mongodb": "^4.1.2"
+    "mongodb": "^4.1.2",
+    "slack-block-builder": "^2.2.0"
   },
   "keywords": [
     "hubot-scripts",

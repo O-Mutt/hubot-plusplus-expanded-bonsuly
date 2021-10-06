@@ -12,7 +12,8 @@ class BonuslyService {
         'Content-Type': 'application/json',
       },
     });
-    this.defaultReason = procVars.bonuslyDefaultReason || '#1team1score';
+    this.defaultReason = procVars.bonuslyDefaultReason || `point given through <@${this.robot.id}>`;
+    this.defaultHashtag = procVars.bonuslyDefaultHashtag || '#1team1score';
   }
 
   /**
@@ -22,19 +23,22 @@ class BonuslyService {
    */
   async sendBonus(event) {
     this.robot.logger.debug(`Sending a bonusly bonus to ${JSON.stringify(event.recipient.slackEmail)} from ${JSON.stringify(event.sender.slackEmail)}`);
-    let reason = `point given through ${this.robot.name}`;
+    let reason = this.defaultReason;
     if (event.reason) {
       const buff = new Buffer.from(event.reason, 'base64');
       reason = buff.toString('UTF-8');
     }
 
-    let hashtag = this.defaultReason;
+    let hashtag = this.defaultHashtag;
     if (reason && /(#\w+)/i.test(reason)) {
       const match = reason.match(/(#\w+)/i);
-      hashtag = match ? match[0] : this.defaultReason;
+      hashtag = match ? match[0] : this.defaultHashtag;
     }
 
     let data;
+    if (event.amount === 1) {
+      event.amount = 1;
+    }
     try {
       ({ data } = await this.axios.post('/api/v1/bonuses', {
         giver_email: event.sender.slackEmail,
