@@ -85,8 +85,8 @@ module.exports = function (robot) {
     }
 
     const dialog = switchBoard.startDialog(msg);
-    let choiceMsg = `${robot.name} is setup to allow you to also send Bonusly point(s) when you send a ${robot.name} point! `;
-    choiceMsg += `currently you are set to send *${user.bonuslyAmount || 1}* point(s). Respond with a number to change this amount.`;
+    let choiceMsg = `${robot.name} is setup to allow you to also send Bonusly point(s) when you send a ${robot.name} point!\n`;
+    choiceMsg += `Currently you are set to send *${user.bonuslyAmount || 1}* point(s). Respond with a number to change this amount.`;
     robot.messageRoom(user.slackId, choiceMsg);
     dialog.addChoice(/(?<amount>[0-9]+)/i, async (msg2) => {
       const amount = msg2.match.groups.amount || 1;
