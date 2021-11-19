@@ -36,6 +36,7 @@ module.exports = function (robot) {
   robot.on('plus-plus-bonusly-sent', handleBonuslySent);
   robot.respond(/.*change.*bonusly\s?(?:integration)?\s?(?:configuration|config|response|setting|settings).*/ig, changeBonuslyConfig);
   robot.respond(/.*change.*bonusly.*(points|amount).*/ig, changeBonuslyAmount);
+  robot.respond(/.*toggle dm about bonusly.*/ig, toggleBonuslyDM);
 
   async function changeBonuslyConfig(msg) {
     const switchBoard = new Conversation(robot);
@@ -94,6 +95,21 @@ module.exports = function (robot) {
     });
   }
 
+  async function toggleBonuslyDM(msg) {
+    if (msg.message.room[0] !== 'D' && msg.message.room !== 'Shell') {
+      msg.reply(`Please use this function of ${robot.name} in DM.`);
+      return;
+    }
+
+    const user = await userService.getUser(msg.message.user.id);
+    if (!user) {
+      msg.reply('I\'m sorry we could not find your user account. Please contact an admin');
+      return;
+    }
+
+    await userService.toggleBonuslyDM(user);
+    msg.reply(`Thank you! We've updated your ${robot.name}->bonusly DM config`);
+  }
   /**
    * The event that was emitted by the plus-plus module for a user
    * (https://github.com/O-Mutt/hubot-plusplus-expanded/blob/main/src/plusplus.js#L270-L277)
@@ -187,11 +203,14 @@ module.exports = function (robot) {
     }
   }
 
-  function handleBonuslySent(e) {
+  async function handleBonuslySent(e) {
     if (e.response.success === true) {
       robot.logger.debug('bonusly point was sent and we caught the event.');
       const bonuslyMessage = `We sent a Bonusly for ${e.response.result.amount_with_currency} to <@${e.event.recipient.slackId}>.`;
-      robot.messageRoom(e.event.sender.slackId, `We sent <@${e.event.recipient.slackId}> ${e.response.result.amount_with_currency} via Bonusly. You now have ${e.response.result.giver.giving_balance_with_currency} left.`);
+      const user = await userService.getUser(e.event.sender.slackId);
+      if (user.bonuslyDM) {
+        robot.messageRoom(e.event.sender.slackId, `We sent <@${e.event.recipient.slackId}> ${e.response.result.amount_with_currency} via Bonusly. You now have ${e.response.result.giver.giving_balance_with_currency} left.`);
+      }
       e.event.msg.send(bonuslyMessage);
     } else {
       robot.logger.error('there was an issue sending a bonus', e.response.message);

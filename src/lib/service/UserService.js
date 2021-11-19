@@ -60,6 +60,17 @@ class UserService {
       { sort: { score: -1 } },
     );
   }
+
+  async toggleBonuslyDM(user) {
+    const db = await this.getDb();
+
+    const shouldDM = user.bonuslyDM ? !user.bonuslyDM : false;
+    await db.collection('scores').updateOne(
+      { slackId: user.slackId },
+      { $set: { bonuslyDM: shouldDM } },
+      { sort: { score: -1 } },
+    );
+  }
 }
 
 module.exports = UserService;
