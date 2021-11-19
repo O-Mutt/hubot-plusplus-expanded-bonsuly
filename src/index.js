@@ -89,7 +89,7 @@ module.exports = function (robot) {
     choiceMsg += `currently you are set to send *${user.bonuslyAmount || 1}* point(s). Respond with a number to change this amount.`;
     robot.messageRoom(user.slackId, choiceMsg);
     dialog.addChoice(/(?<amount>[0-9]+)/i, async (msg2) => {
-      const amount = msg2.matches.groups.amount || 1;
+      const amount = msg2.match.groups.amount || 1;
       await userService.setBonuslyAmount(user, amount);
       msg.reply(`Thank you! We've updated your ${robot.name}->bonusly amount to *${amount}*`);
     });
