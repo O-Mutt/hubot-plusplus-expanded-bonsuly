@@ -50,6 +50,16 @@ class UserService {
       { sort: { score: -1 } },
     );
   }
+
+  async setBonuslyAmount(user, amount) {
+    const db = await this.getDb();
+
+    await db.collection('scores').updateOne(
+      { slackId: user.slackId },
+      { $set: { bonuslyAmount: amount } },
+      { sort: { score: -1 } },
+    );
+  }
 }
 
 module.exports = UserService;

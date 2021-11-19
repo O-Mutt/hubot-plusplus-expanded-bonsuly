@@ -35,6 +35,7 @@ module.exports = function (robot) {
   robot.on('plus-plus', handlePlusPlus);
   robot.on('plus-plus-bonusly-sent', handleBonuslySent);
   robot.respond(/.*change.*bonusly\s?(?:integration)?\s?(?:configuration|config|response|setting|settings).*/ig, changeBonuslyConfig);
+  robot.respond(/.*change.*bonusly.*(points|amount).*/ig, changeBonuslyAmount);
 
   async function changeBonuslyConfig(msg) {
     const switchBoard = new Conversation(robot);
@@ -69,6 +70,30 @@ module.exports = function (robot) {
     });
   }
 
+  async function changeBonuslyAmount(msg) {
+    const switchBoard = new Conversation(robot);
+    if (msg.message.room[0] !== 'D' && msg.message.room !== 'Shell') {
+      msg.reply(`Please use this function of ${robot.name} in DM.`);
+      return;
+    }
+
+    const user = await userService.getUser(msg.message.user.id);
+    if (!user) {
+      msg.reply('I\'m sorry we could not find your user account. Please contact an admin');
+      return;
+    }
+
+    const dialog = switchBoard.startDialog(msg);
+    let choiceMsg = `${robot.name} is setup to allow you to also send Bonusly point(s) when you send a ${robot.name} point! `;
+    choiceMsg += `currently you are set to send *${user.bonuslyAmount}* point(s). Respond with a number to change this amount.`;
+    robot.messageRoom(user.slackId, choiceMsg);
+    dialog.addChoice(/(?<amount>[0-9]+)/i, async (msg2) => {
+      const amount = msg2.matches.groups.amount || 1;
+      await userService.setBonuslyAmount(user, amount);
+      msg.reply(`Thank you! We've updated your ${robot.name}->bonusly amount to *${amount}*`);
+    });
+  }
+
   /**
    * The event that was emitted by the plus-plus module for a user
    * (https://github.com/O-Mutt/hubot-plusplus-expanded/blob/main/src/plusplus.js#L270-L277)
@@ -84,6 +109,11 @@ module.exports = function (robot) {
    */
   async function handlePlusPlus(event) {
     const switchBoard = new Conversation(robot);
+    if (event.direction !== '++' && event.direction !== '+') {
+      robot.logger.debug(`Points were taken away, not given. We won't talk to bonusly for this one.\n${JSON.stringify(event.direction)}`);
+      return;
+    }
+
     if (!event.sender.slackEmail || !event.recipient.slackEmail) {
       const message = `<@${event.sender.slackId}> is trying to send to <@${event.recipient.slackId}> but the one of the emails are missing. Sender: [${event.sender.slackEmail}], Recipient: [${event.recipient.slackEmail}]`;
       robot.logger.error(message);
@@ -94,6 +124,8 @@ module.exports = function (robot) {
       return;
     }
 
+    const { bonuslyAmount = 1 } = await userService.getUser(event.sender.slackId);
+    event.amount = bonuslyAmount;
     const msg = {
       message: {
         user: {
@@ -105,7 +137,7 @@ module.exports = function (robot) {
     if (!event.sender.bonuslyResponse) {
       const dialog = switchBoard.startDialog(msg);
       dialog.dialogTimeout = () => {
-        robot.messageRoom(event.sender.slackId, 'We didn\'t receive your response in time. Please try again.')
+        robot.messageRoom(event.sender.slackId, 'We didn\'t receive your response in time. Please try again.');
       };
       // check with user how they want to handle hubot points/bonusly bonuses
       let choiceMsg = `${robot.name} is setup to allow you to also send a Bonusly point when you send a ${robot.name} point! `;
@@ -133,11 +165,6 @@ module.exports = function (robot) {
         await userService.setBonuslyResponse(event.sender, BonuslyResponse.NEVER);
         robot.messageRoom(event.sender.slackId, 'Alright! No worries. If you ever change your mind we can change your mind just let me know (DM me `change my bonusly settings`)!');
       });
-      return;
-    }
-
-    if (event.direction !== '++' && event.direction !== '+') {
-      robot.logger.debug(`Points were taken away, not given. We won't talk to bonusly for this one.\n${JSON.stringify(event.direction)}`);
       return;
     }
 
