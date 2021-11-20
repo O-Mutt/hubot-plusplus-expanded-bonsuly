@@ -89,7 +89,7 @@ module.exports = function (robot) {
     choiceMsg += `Currently you are set to send *${user.bonuslyAmount || 1}* point(s). Respond with a number to change this amount.`;
     robot.messageRoom(user.slackId, choiceMsg);
     dialog.addChoice(/(?<amount>[0-9]+)/i, async (msg2) => {
-      const amount = msg2.match.groups.amount || 1;
+      const amount = parseInt(msg2.match.groups.amount || 1, 10);
       await userService.setBonuslyAmount(user, amount);
       msg.reply(`Thank you! We've updated your ${robot.name}->bonusly amount to *${amount}*`);
     });
@@ -101,14 +101,15 @@ module.exports = function (robot) {
       return;
     }
 
-    const user = await userService.getUser(msg.message.user.id);
+    let user = await userService.getUser(msg.message.user.id);
     if (!user) {
       msg.reply('I\'m sorry we could not find your user account. Please contact an admin');
       return;
     }
 
     await userService.toggleBonuslyDM(user);
-    msg.reply(`Thank you! We've updated your ${robot.name}->bonusly DM config`);
+    user = await userService.getUser(msg.message.user.id);
+    msg.reply(`Thank you! We've updated your ${robot.name}->bonusly DM config. ${user.bonuslyDM ? `${robot.name} will DM you again.` : `${robot.name} won't DM you any more.`}`);
   }
   /**
    * The event that was emitted by the plus-plus module for a user
@@ -208,8 +209,16 @@ module.exports = function (robot) {
       robot.logger.debug('bonusly point was sent and we caught the event.');
       const bonuslyMessage = `We sent a Bonusly for ${e.response.result.amount_with_currency} to <@${e.event.recipient.slackId}>.`;
       const user = await userService.getUser(e.event.sender.slackId);
-      if (user.bonuslyDM) {
-        robot.messageRoom(e.event.sender.slackId, `We sent <@${e.event.recipient.slackId}> ${e.response.result.amount_with_currency} via Bonusly. You now have ${e.response.result.giver.giving_balance_with_currency} left.`);
+      if (user.bonuslyDM === true || user.bonuslyDM === undefined) {
+        let dm = `We sent <@${e.event.recipient.slackId}> ${e.response.result.amount_with_currency} via Bonusly. You now have ${e.response.result.giver.giving_balance_with_currency} left.`;
+        if (!user.bonuslyAmount || e.event.amount === 1 || Helpers.rngBoolean()) {
+          dm += `\n Did you know you could change the amount you send per ${robot.name} Point? Just DM @${robot.name} \`change my bonusly points setting\`,`;
+          dm += '\n I will ask you about how many points you\'d like to send per `++` you respond with a number. Bingo Bango Bongo, you\'re all set.';
+        }
+        if (user.bonuslyDM === undefined || Helpers.rngBoolean()) {
+          dm += `\n Don't like these DMs about bonusly? Just DM @${robot.name} \`toggle dm about bonusly\` and we will turn off this DM.`;
+        }
+        robot.messageRoom(e.event.sender.slackId, dm);
       }
       e.event.msg.send(bonuslyMessage);
     } else {

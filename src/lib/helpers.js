@@ -7,6 +7,12 @@ function createProcVars(env) {
   return procVars;
 }
 
+function rngBoolean() {
+  // 35% chance to be true
+  return Math.random() < 0.35;
+}
+
 module.exports = {
   createProcVars,
+  rngBoolean,
 };
