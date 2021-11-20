@@ -211,12 +211,12 @@ module.exports = function (robot) {
       const user = await userService.getUser(e.event.sender.slackId);
       if (user.bonuslyDM === true || user.bonuslyDM === undefined) {
         let dm = `We sent <@${e.event.recipient.slackId}> ${e.response.result.amount_with_currency} via Bonusly. You now have ${e.response.result.giver.giving_balance_with_currency} left.`;
-        if (!user.bonuslyAmount || e.event.amount === 1 || Helpers.rngBoolean()) {
-          dm += `\n Did you know you could change the amount you send per ${robot.name} Point? Just DM @${robot.name} \`change my bonusly points setting\`,`;
-          dm += '\n I will ask you about how many points you\'d like to send per `++` you respond with a number. Bingo Bango Bongo, you\'re all set.';
+        if ((!user.bonuslyAmount || e.event.amount === 1) && Helpers.rngBoolean()) {
+          dm += `\n\nDid you know you could change the amount you send per ${robot.name} Point?\n Just DM @${robot.name} \`change my bonusly points setting\`,`;
+          dm += '\nI will ask you about how many points you\'d like to send per `++` you respond with a number.\n :tada: Bingo Bango Bongo, you\'re all set.';
         }
-        if (user.bonuslyDM === undefined || Helpers.rngBoolean()) {
-          dm += `\n Don't like these DMs about bonusly? Just DM @${robot.name} \`toggle dm about bonusly\` and we will turn off this DM.`;
+        if (user.bonuslyDM === undefined && Helpers.rngBoolean()) {
+          dm += `\n\nDon't like these DMs about bonusly?\nJust DM @${robot.name} \`toggle dm about bonusly\` and we will turn off this DM.`;
         }
         robot.messageRoom(e.event.sender.slackId, dm);
       }
